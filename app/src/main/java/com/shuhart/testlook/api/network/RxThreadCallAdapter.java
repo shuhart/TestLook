@@ -1,4 +1,4 @@
-package com.shuhart.testlook.business.network;
+package com.shuhart.testlook.api.network;
 
 import android.support.annotation.NonNull;
 
@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
@@ -44,7 +45,7 @@ public class RxThreadCallAdapter extends CallAdapter.Factory {
 
         @Override
         public Object adapt(@NonNull Call<R> call) {
-            return ((Observable<?>) delegateAdapter.adapt(call))
+            return ((Single<?>) delegateAdapter.adapt(call))
                     .subscribeOn(subscribeScheduler)
                     .observeOn(observerScheduler);
         }

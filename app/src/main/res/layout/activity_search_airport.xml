@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fake_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="2dp"
+        android:translationZ="4dp"
+        tools:targetApi="lollipop" />
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/search_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:elevation="2dp"
+        android:src="@drawable/ic_search_web_white_24dp"
+        android:translationZ="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/fake_toolbar"
+        app:layout_constraintLeft_toLeftOf="@id/fake_toolbar"
+        app:layout_constraintTop_toTopOf="@id/fake_toolbar"
+        app:tint="@color/white_50"
+        tools:ignore="ContentDescription"
+        tools:targetApi="lollipop" />
+
+    <EditText
+        android:id="@+id/search_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@android:color/transparent"
+        android:elevation="2dp"
+        android:hint="@string/origin"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/white_50"
+        android:textCursorDrawable="@null"
+        android:translationZ="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/fake_toolbar"
+        app:layout_constraintLeft_toRightOf="@id/search_icon"
+        app:layout_constraintRight_toRightOf="@id/fake_toolbar"
+        app:layout_constraintTop_toTopOf="@id/fake_toolbar"
+        tools:ignore="UnusedAttribute" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/adapter_search_aiport_item" />
+</android.support.constraint.ConstraintLayout>

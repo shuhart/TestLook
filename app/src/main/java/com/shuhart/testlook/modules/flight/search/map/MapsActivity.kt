@@ -1,4 +1,4 @@
-package com.shuhart.testlook
+package com.shuhart.testlook.modules.flight.search.map
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.shuhart.testlook.R
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 

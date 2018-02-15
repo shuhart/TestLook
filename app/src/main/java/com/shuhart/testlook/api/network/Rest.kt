@@ -1,8 +1,9 @@
-package com.shuhart.testlook.business.network
+package com.shuhart.testlook.api.network
 
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.shuhart.testlook.BuildConfig
+import com.shuhart.testlook.utils.GsonUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -19,7 +20,7 @@ object Rest {
     private val RETROFIT = Retrofit.Builder()
             .baseUrl(ENDPOINT)
             .client(buildHttpClient())
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .addConverterFactory(GsonConverterFactory.create(GsonUtils.gson))
             .addCallAdapterFactory(RxThreadCallAdapter(Schedulers.io(), AndroidSchedulers.mainThread()))
             .build()
 

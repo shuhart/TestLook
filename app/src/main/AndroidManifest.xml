@@ -28,14 +28,23 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
+            android:name=".modules.flight.search.map.MapsActivity"
+            android:configChanges="keyboardHidden|orientation|layoutDirection"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".modules.flight.search.flight.SearchFlightActivity"
+            android:configChanges="keyboardHidden|orientation|layoutDirection"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".modules.flight.search.airport.SearchAirportActivity"
+            android:configChanges="keyboardHidden|orientation|layoutDirection"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
