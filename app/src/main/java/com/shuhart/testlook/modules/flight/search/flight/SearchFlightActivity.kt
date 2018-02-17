@@ -35,7 +35,7 @@ class SearchFlightActivity : AppCompatActivity() {
                 from.tag = city
             }
             REQUEST_CODE_TO -> {
-                to.text = to.toString()
+                to.text = city.toString()
                 to.tag = city
             }
         }

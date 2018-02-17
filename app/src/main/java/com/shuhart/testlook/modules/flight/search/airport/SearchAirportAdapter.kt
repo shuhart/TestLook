@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.shuhart.testlook.R
 import com.shuhart.testlook.api.model.City
 
-class SearchAiportAdapter : RecyclerView.Adapter<SearchAiportAdapter.CityViewHolder>() {
+class SearchAirportAdapter : RecyclerView.Adapter<SearchAirportAdapter.CityViewHolder>() {
     var items = mutableListOf<City>()
 
     var listener: CityItemClickListener? = null
@@ -23,7 +23,7 @@ class SearchAiportAdapter : RecyclerView.Adapter<SearchAiportAdapter.CityViewHol
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
         val city = items[position]
-        val text = "${city.fullname} ${city.iate.firstOrNull() ?: ""}"
+        val text = city.toString()
         holder.textView.text = text
         holder.textView.setOnClickListener {
             listener?.onCityItemClicked(items[holder.adapterPosition])
