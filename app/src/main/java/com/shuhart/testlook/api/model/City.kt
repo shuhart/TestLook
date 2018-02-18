@@ -7,6 +7,8 @@ data class City(
         val id: Int,
         @SerializedName("fullname")
         val fullname: String,
+        @SerializedName("city")
+        val name: String,
         @SerializedName("iata")
         val iate: List<String>,
         @SerializedName("location")

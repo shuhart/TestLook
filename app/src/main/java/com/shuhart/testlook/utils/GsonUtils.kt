@@ -1,12 +1,12 @@
 package com.shuhart.testlook.utils
 
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.Log
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.lang.reflect.Type
 
 object GsonUtils {
-    val gson = GsonBuilder().create()
+    val gson: Gson = GsonBuilder().create()
 
     fun <T> serialize(t: T?): String = t?.let { gson.toJson(it) } ?: ""
 
