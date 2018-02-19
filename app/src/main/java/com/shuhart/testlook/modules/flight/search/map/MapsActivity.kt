@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.animation.AccelerateInterpolator
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.shuhart.testlook.R
@@ -214,6 +215,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (::animator.isInitialized && animator.isRunning) return
         animator = ValueAnimator.ofFloat(0f, maxProgress)
                 .setDuration(10000)
+        animator.interpolator = AccelerateInterpolator()
         animator.addUpdateListener {
             val value = it.animatedValue as Float
             val fraction = value / maxProgress
