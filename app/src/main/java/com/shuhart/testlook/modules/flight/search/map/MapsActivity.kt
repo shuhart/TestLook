@@ -1,13 +1,11 @@
 package com.shuhart.testlook.modules.flight.search.map
 
-import android.graphics.Path
-import android.graphics.PathMeasure
-import android.graphics.Point
+import android.animation.ValueAnimator
+import android.graphics.*
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.shuhart.testlook.R
@@ -30,6 +28,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var dotsMargin = 0
     private var dotsColor = 0
     private val dots = mutableListOf<LatLng>()
+    private val circles = mutableListOf<Circle>()
+    private lateinit var planeMarker: Marker
+    private lateinit var planeBitmap: Bitmap
+
+    private lateinit var animator: ValueAnimator
+    private var previousZoom: Float = 0f
+    private val maxProgress = 1000f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,24 +56,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         dotsColor = ContextCompat.getColor(this, R.color.colorAccent)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    private fun initPlaneMarker() {
+        if (::planeMarker.isInitialized) return
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_plane)
+        val origPoint = projection.toScreenLocation(originLatLng)
+        val destPoint = projection.toScreenLocation(destLatLng)
+        planeBitmap = if (origPoint.x < destPoint.x) {
+            bitmap
+        } else {
+            flip(bitmap)
+        }
+    }
+
+    private fun flip(source: Bitmap): Bitmap {
+        val matrix = Matrix()
+//        matrix.preScale(-1.0f, 1.0f)
+        matrix.preScale(1.0f, -1.0f)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         setUpMap()
         addLocations()
         map.setOnCameraIdleListener {
-            // todo check last zoom level
-            Log.d(javaClass.simpleName, "Idle listener")
-            projection = map.projection
-            updatePath()
+            if (previousZoom != map.cameraPosition.zoom) {
+                previousZoom = map.cameraPosition.zoom
+                projection = map.projection
+                initPlaneMarker()
+                updatePath()
+                startAnimation()
+            }
         }
         zoomToFitLocations()
     }
@@ -110,7 +128,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val padding = (width * 0.15).toInt()
         return CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
     }
-
 
     private fun makePath() {
         path = Path()
@@ -156,6 +173,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun makeDots() {
+        dots.clear()
         var count = (pathMeasure.length / (dotsdiameter * 2 + dotsMargin)).toInt()
         if (count > 40) {
             count = 40
@@ -170,12 +188,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun drawPath() {
+        circles.forEach {
+            it.remove()
+        }
         val radius = getRadiusInMeters()
         dots.forEach {
-            map.addCircle(CircleOptions().center(it)
+            circles.add(map.addCircle(CircleOptions().center(it)
                     .fillColor(dotsColor)
                     .radius(radius)
-                    .strokeWidth(0f))
+                    .strokeWidth(0f)))
         }
     }
 
@@ -187,5 +208,53 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val diameter = FloatArray(1)
         Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, diameter)
         return diameter[0].toDouble()
+    }
+
+    private fun startAnimation() {
+        if (::animator.isInitialized && animator.isRunning) return
+        animator = ValueAnimator.ofFloat(0f, maxProgress)
+                .setDuration(10000)
+        animator.addUpdateListener {
+            val value = it.animatedValue as Float
+            val fraction = value / maxProgress
+            animateTo(fraction)
+        }
+        animator.start()
+    }
+
+    private fun animateTo(progress: Float) {
+        placePlaneMarker()
+        val tan = FloatArray(2)
+        val pos = FloatArray(2)
+        pathMeasure.getPosTan(pathMeasure.length * progress, pos, tan)
+        rotateAndPositionPlaneMarker(tan, pos)
+    }
+
+    private fun placePlaneMarker() {
+        if (::planeMarker.isInitialized) return
+        planeMarker = map.addMarker(MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(planeBitmap))
+                .zIndex(2f)
+                .anchor(0.5f, 0.5f)
+                .position(originLatLng))
+    }
+
+    private fun rotateAndPositionPlaneMarker(tan: FloatArray, pos: FloatArray) {
+        planeMarker.rotation = Math.toDegrees(Math.atan2(tan[1].toDouble(), tan[0].toDouble())).toFloat()
+        val mapped = projection.fromScreenLocation(Point(pos[0].toInt(), pos[1].toInt()))
+        if (mapped != null) {
+            planeMarker.position = mapped
+        }
+    }
+
+    override fun onDestroy() {
+        if (this::animator.isInitialized) {
+            animator.removeAllListeners()
+            animator.cancel()
+        }
+        if (this::map.isInitialized) {
+            map.clear()
+        }
+        super.onDestroy()
     }
 }
