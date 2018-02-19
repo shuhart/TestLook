@@ -1,25 +1,35 @@
 package com.shuhart.testlook.modules.flight.search.map
 
+import android.graphics.Path
+import android.graphics.PathMeasure
+import android.graphics.Point
+import android.location.Location
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import android.util.Log
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.shuhart.testlook.R
 import com.shuhart.testlook.api.model.City
 import com.shuhart.testlook.utils.PairExtras
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private lateinit var origin: City
     private lateinit var dest: City
     private lateinit var originLatLng: LatLng
     private lateinit var destLatLng: LatLng
+    private lateinit var projection: Projection
+
+    private lateinit var path: Path
+    private lateinit var pathMeasure: PathMeasure
+
+    private var dotsdiameter = 0
+    private var dotsMargin = 0
+    private var dotsColor = 0
+    private val dots = mutableListOf<LatLng>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +46,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         this.dest = dest
         originLatLng = LatLng(origin.location.lat, origin.location.lon)
         destLatLng = LatLng(dest.location.lat, dest.location.lon)
+        dotsdiameter = resources.getDimensionPixelSize(R.dimen.search_flight_animation_dots_radius)
+        dotsMargin = resources.getDimensionPixelSize(R.dimen.search_flight_animation_dots_margin)
+        dotsColor = ContextCompat.getColor(this, R.color.colorAccent)
     }
 
     /**
@@ -49,8 +62,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        setUpMap()
         addLocations()
+        map.setOnCameraIdleListener {
+            // todo check last zoom level
+            Log.d(javaClass.simpleName, "Idle listener")
+            projection = map.projection
+            updatePath()
+        }
         zoomToFitLocations()
+    }
+
+    private fun updatePath() {
+        makePath()
+        makeDots()
+        drawPath()
+    }
+
+    private fun setUpMap() {
+        map.uiSettings.apply {
+            isCompassEnabled = false
+            isZoomControlsEnabled = false
+            isRotateGesturesEnabled = false
+            isTiltGesturesEnabled = false
+            isMapToolbarEnabled = false
+        }
     }
 
     private fun addLocations() {
@@ -59,18 +95,106 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun zoomToFitLocations() {
-        val builder = LatLngBounds.Builder()
+        val cameraUpdate = buildCameraUpdate()
+        map.moveCamera(cameraUpdate)
+    }
 
-        builder.include(originLatLng)
-        builder.include(destLatLng)
-
-        val bounds = builder.build()
+    private fun buildCameraUpdate(): CameraUpdate {
+        val bounds = LatLngBounds.Builder()
+                .include(originLatLng)
+                .include(destLatLng)
+                .build()
         val dm = resources.displayMetrics
         val width = dm.widthPixels
         val height = dm.heightPixels
-        val padding = (width * 0.20).toInt()
-        val cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+        val padding = (width * 0.15).toInt()
+        return CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding)
+    }
 
-        map.moveCamera(cu)
+
+    private fun makePath() {
+        path = Path()
+        val startPoint = projection.toScreenLocation(originLatLng)
+        val endPoint = projection.toScreenLocation(destLatLng)
+        path.moveTo(startPoint.x.toFloat(), startPoint.y.toFloat())
+
+        val (firstControlPoint, secondControlPoint) = makeControlPoints(startPoint, endPoint)
+        path.cubicTo(firstControlPoint.x.toFloat(), firstControlPoint.y.toFloat(),
+                secondControlPoint.x.toFloat(), secondControlPoint.y.toFloat(),
+                endPoint.x.toFloat(), endPoint.y.toFloat())
+        pathMeasure = PathMeasure(path, false)
+
+        map.addMarker(MarkerOptions()
+                .position(projection.fromScreenLocation(Point(firstControlPoint.x, firstControlPoint.y)))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .title("First control point"))
+        map.addMarker(MarkerOptions()
+                .position(projection.fromScreenLocation(Point(secondControlPoint.x, secondControlPoint.y)))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .title("Second control point"))
+    }
+
+    private fun makeControlPoints(startPoint: Point, endPoint: Point): Pair<Point, Point> {
+        val firstControlPoint: Point
+        val secondControlPoint: Point
+
+        val axis = Math.max(Math.abs(startPoint.x - endPoint.x), Math.abs(startPoint.y - endPoint.y))
+        val diameter = axis / 2
+        if (startPoint.y < endPoint.y) {
+            if (startPoint.x < endPoint.x) {
+                firstControlPoint = Point(startPoint.x + diameter, startPoint.y + diameter)
+                secondControlPoint = Point(endPoint.x - diameter, endPoint.y - diameter)
+            } else {
+                firstControlPoint = Point(startPoint.x - diameter, startPoint.y + diameter)
+                secondControlPoint = Point(endPoint.x + diameter, endPoint.y - diameter)
+            }
+        } else if (startPoint.y > endPoint.y) {
+            if (startPoint.x <= endPoint.x) {
+                firstControlPoint = Point(startPoint.x + diameter, startPoint.y - diameter)
+                secondControlPoint = Point(endPoint.x - diameter, endPoint.y + diameter)
+            } else {
+                firstControlPoint = Point(startPoint.x - diameter, startPoint.y - diameter)
+                secondControlPoint = Point(endPoint.x + diameter, endPoint.y + diameter)
+            }
+        } else {
+            firstControlPoint = Point(startPoint.x - diameter, startPoint.y + diameter)
+            secondControlPoint = Point(endPoint.x + diameter, endPoint.y - diameter)
+        }
+
+        return Pair(firstControlPoint, secondControlPoint)
+    }
+
+    private fun makeDots() {
+        var count = (pathMeasure.length / (dotsdiameter * 2 + dotsMargin)).toInt()
+        if (count > 40) {
+            count = 40
+        }
+        for (i in 0 until count) {
+            val pos = FloatArray(2)
+            val distance = pathMeasure.length / count * i + dotsdiameter + dotsMargin
+            pathMeasure.getPosTan(distance, pos, null)
+            val screenPoint = Point(pos[0].toInt(), pos[1].toInt())
+            dots.add(projection.fromScreenLocation(screenPoint))
+        }
+    }
+
+    private fun drawPath() {
+        val radius = getRadiusInMeters()
+        dots.forEach {
+            map.addCircle(CircleOptions().center(it)
+                    .fillColor(dotsColor)
+                    .radius(radius)
+                    .strokeWidth(0f))
+        }
+    }
+
+    private fun getRadiusInMeters(): Double {
+        val first = LatLng(0.0, 0.0)
+        val firstPoint = projection.toScreenLocation(first)
+        firstPoint.x += dotsdiameter
+        val second = projection.fromScreenLocation(firstPoint)
+        val diameter = FloatArray(1)
+        Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, diameter)
+        return diameter[0].toDouble()
     }
 }
