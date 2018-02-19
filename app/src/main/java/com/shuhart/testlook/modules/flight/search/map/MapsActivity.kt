@@ -123,15 +123,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 secondControlPoint.x.toFloat(), secondControlPoint.y.toFloat(),
                 endPoint.x.toFloat(), endPoint.y.toFloat())
         pathMeasure = PathMeasure(path, false)
-
-        map.addMarker(MarkerOptions()
-                .position(projection.fromScreenLocation(Point(firstControlPoint.x, firstControlPoint.y)))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                .title("First control point"))
-        map.addMarker(MarkerOptions()
-                .position(projection.fromScreenLocation(Point(secondControlPoint.x, secondControlPoint.y)))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                .title("Second control point"))
     }
 
     private fun makeControlPoints(startPoint: Point, endPoint: Point): Pair<Point, Point> {
