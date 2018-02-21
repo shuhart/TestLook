@@ -2,7 +2,7 @@
 
 ## Language
 Kotlin. Extensions, lambdas, inlined functions are used where appropriate.
-kotlin-android-extensions is used to get rid of findViewById() and annoying casts.
+Android extension for Kotlin is used to get rid of findViewById() and annoying casts.
 
 ## Architecture
 MVP + Dagger 2, RxJava2 for Network layer
