@@ -141,13 +141,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 endPoint.x.toFloat(), endPoint.y.toFloat())
         pathMeasure = PathMeasure(path, false)
 
-        map.addMarker(MarkerOptions()
-                .position(projection.fromScreenLocation(firstControlPoint))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
-        map.addMarker(MarkerOptions()
-                .position(projection.fromScreenLocation(secondControlPoint))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
-
     }
 
     private fun makeControlPoints(startPoint: Point, endPoint: Point): Pair<Point, Point> {
@@ -158,23 +151,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val diameter = axis / 2
         if (startPoint.y < endPoint.y) {
             if (startPoint.x < endPoint.x) {
-                firstControlPoint = Point(startPoint.x + diameter, startPoint.y + diameter)
-                secondControlPoint = Point(endPoint.x - diameter, endPoint.y - diameter)
+                firstControlPoint = Point(startPoint.x , startPoint.y + diameter)
+                secondControlPoint = Point(endPoint.x, endPoint.y - diameter)
+                if (Math.abs(firstControlPoint.x - secondControlPoint.x) < diameter) {
+                    firstControlPoint.x = startPoint.x + diameter
+                    secondControlPoint.x = endPoint.x - diameter
+                }
             } else {
-                firstControlPoint = Point(startPoint.x - diameter, startPoint.y + diameter)
-                secondControlPoint = Point(endPoint.x + diameter, endPoint.y - diameter)
+                firstControlPoint = Point(startPoint.x, startPoint.y + diameter)
+                secondControlPoint = Point(endPoint.x, endPoint.y - diameter)
+                if (Math.abs(firstControlPoint.x - secondControlPoint.x) < diameter) {
+                    firstControlPoint.x = startPoint.x - diameter
+                    secondControlPoint.x = endPoint.x + diameter
+                }
             }
         } else if (startPoint.y > endPoint.y) {
             if (startPoint.x <= endPoint.x) {
-                firstControlPoint = Point(startPoint.x + diameter, startPoint.y - diameter)
-                secondControlPoint = Point(endPoint.x - diameter, endPoint.y + diameter)
+                firstControlPoint = Point(startPoint.x, startPoint.y - diameter)
+                secondControlPoint = Point(endPoint.x, endPoint.y + diameter)
+                if (Math.abs(firstControlPoint.x - secondControlPoint.x) < diameter) {
+                    firstControlPoint.x = startPoint.x + diameter
+                    secondControlPoint.x = endPoint.x - diameter
+                }
             } else {
-                firstControlPoint = Point(startPoint.x - diameter, startPoint.y - diameter)
-                secondControlPoint = Point(endPoint.x + diameter, endPoint.y + diameter)
+                firstControlPoint = Point(startPoint.x, startPoint.y - diameter)
+                secondControlPoint = Point(endPoint.x, endPoint.y + diameter)
+                if (Math.abs(firstControlPoint.x - secondControlPoint.x) < diameter) {
+                    firstControlPoint.x = startPoint.x + diameter
+                    secondControlPoint.x = endPoint.x - diameter
+                }
             }
         } else {
-            firstControlPoint = Point(startPoint.x - diameter, startPoint.y + diameter)
-            secondControlPoint = Point(endPoint.x + diameter, endPoint.y - diameter)
+            firstControlPoint = Point(startPoint.x + diameter, startPoint.y + diameter)
+            secondControlPoint = Point(endPoint.x - diameter, endPoint.y - diameter)
         }
 
         return Pair(firstControlPoint, secondControlPoint)
