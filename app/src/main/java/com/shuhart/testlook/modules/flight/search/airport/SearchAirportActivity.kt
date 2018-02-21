@@ -3,23 +3,26 @@ package com.shuhart.testlook.modules.flight.search.airport
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.Toast
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.shuhart.testlook.R
 import com.shuhart.testlook.api.model.City
+import com.shuhart.testlook.modules.base.BaseActivity
 import com.shuhart.testlook.utils.SingleExtras
 import kotlinx.android.synthetic.main.activity_search_airport.*
+import javax.inject.Inject
 
-class SearchAirportActivity : AppCompatActivity(), SearchAirportView {
-    private lateinit var presenter: SearchAirportPresenter
+
+class SearchAirportActivity : BaseActivity(), SearchAirportView {
+    @Inject
+    lateinit var presenter: SearchAirportPresenter
+
     private lateinit var adapter: SearchAirportAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = SearchAirportPresenter(this, this)
         setContentView(R.layout.activity_search_airport)
         setup()
     }

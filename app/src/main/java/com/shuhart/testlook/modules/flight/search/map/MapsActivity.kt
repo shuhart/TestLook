@@ -71,7 +71,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun flip(source: Bitmap): Bitmap {
         val matrix = Matrix()
-//        matrix.preScale(-1.0f, 1.0f)
         matrix.preScale(1.0f, -1.0f)
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
@@ -141,6 +140,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 secondControlPoint.x.toFloat(), secondControlPoint.y.toFloat(),
                 endPoint.x.toFloat(), endPoint.y.toFloat())
         pathMeasure = PathMeasure(path, false)
+
+        map.addMarker(MarkerOptions()
+                .position(projection.fromScreenLocation(firstControlPoint))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
+        map.addMarker(MarkerOptions()
+                .position(projection.fromScreenLocation(secondControlPoint))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
     }
 
     private fun makeControlPoints(startPoint: Point, endPoint: Point): Pair<Point, Point> {
