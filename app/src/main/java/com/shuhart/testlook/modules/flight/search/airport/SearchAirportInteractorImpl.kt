@@ -1,12 +1,12 @@
 package com.shuhart.testlook.modules.flight.search.airport
 
 import com.shuhart.testlook.api.model.City
-import com.shuhart.testlook.api.network.Rest
+import com.shuhart.testlook.api.network.Api
 import io.reactivex.Single
 
-class SearchAirportInteractorImpl : SearchAirportInteractor {
+class SearchAirportInteractorImpl(private val api: Api) : SearchAirportInteractor {
     override fun autocomplete(term: String, lang: String): Single<List<City>> {
-        return Rest.api.autocomplete(term, lang)
+        return api.autocomplete(term, lang)
                 .flatMap {
                     if (it.isSuccessful && it.body() != null) {
                         Single.just(it.body()!!.cities)

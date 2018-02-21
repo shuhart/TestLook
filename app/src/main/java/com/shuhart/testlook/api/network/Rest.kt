@@ -1,7 +1,6 @@
 package com.shuhart.testlook.api.network
 
 import android.util.Log
-import com.google.gson.GsonBuilder
 import com.shuhart.testlook.BuildConfig
 import com.shuhart.testlook.utils.GsonUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,10 +11,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-object Rest {
-    private const val ENDPOINT = "https://yasen.hotellook.com/"
-    private const val TIMEOUT_CONNECTION: Long = 30 // in seconds
-    private const val TIMEOUT_READ: Long = 30 // in seconds
+class Rest {
+    private val ENDPOINT = "https://yasen.hotellook.com/"
+    private val TIMEOUT_CONNECTION: Long = 30 // in seconds
+    private val TIMEOUT_READ: Long = 30 // in seconds
 
     private val RETROFIT = Retrofit.Builder()
             .baseUrl(ENDPOINT)
@@ -38,5 +37,5 @@ object Rest {
                 .build()
     }
 
-    val api = RETROFIT.create(Api::class.java)
+    fun create(): Api = RETROFIT.create(Api::class.java)
 }

@@ -1,6 +1,7 @@
 package com.shuhart.testlook.modules.flight.search.airport
 
 import android.content.Context
+import com.shuhart.testlook.api.network.Api
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -17,8 +18,9 @@ abstract class SearchAirportModule {
         @JvmStatic
         @Provides
         fun provideSearchAirPortPresenter(view: SearchAirportView,
-                                          context: Context): SearchAirportPresenter {
-            return SearchAirportPresenterImpl(SearchAirportInteractorImpl(), view, context)
+                                          context: Context,
+                                          api: Api): SearchAirportPresenter {
+            return SearchAirportPresenterImpl(SearchAirportInteractorImpl(api), view, context)
         }
     }
 }
