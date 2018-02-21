@@ -147,6 +147,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         map.addMarker(MarkerOptions()
                 .position(projection.fromScreenLocation(secondControlPoint))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)))
+
     }
 
     private fun makeControlPoints(startPoint: Point, endPoint: Point): Pair<Point, Point> {

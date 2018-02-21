@@ -9,21 +9,10 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class SearchAirportPresenterImpl() : BasePresenter(), SearchAirportPresenter {
-    private lateinit var interactor: SearchAirportInteractor
-    private lateinit var view: SearchAirportView
-    private lateinit var context: Context
-
-    @Inject
-    constructor(interactor: SearchAirportInteractor,
-                view: SearchAirportView,
-                context: Context) : this() {
-        this.interactor = interactor
-        this.view = view
-        this.context = context
-    }
+class SearchAirportPresenterImpl(private val interactor: SearchAirportInteractor,
+                                 private val view: SearchAirportView,
+                                 private val context: Context) : BasePresenter(), SearchAirportPresenter {
 
     private var loadDisposable: Disposable? = null
 
