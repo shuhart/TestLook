@@ -1,8 +1,12 @@
 # TestLook
 
 ## Language
-Kotlin. Extensions, lambdas, inlined functions are used where appropriate.
-Android extension for Kotlin is used to get rid of findViewById() and annoying casts.
+Kotlin. Android extension for Kotlin is used to get rid of findViewById() and annoying casts.
+
+- Extensions are used to extend Android SDK classes: 
+[context](https://github.com/shuhart/TestLook/blob/master/app/src/main/java/com/shuhart/testlook/utils/Context.kt)
+[shared preferences](https://github.com/shuhart/TestLook/blob/master/app/src/main/java/com/shuhart/testlook/utils/SharedPreferences.kt)
+
 
 ## Architecture
 MVP + Dagger 2, RxJava2 for Network layer
