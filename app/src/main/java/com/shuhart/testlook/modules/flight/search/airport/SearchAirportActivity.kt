@@ -72,4 +72,12 @@ class SearchAirportActivity : BaseActivity(), SearchAirportView {
         super.onDestroy()
         presenter.onDestroy()
     }
+
+    override fun showProgress() {
+        smooth_progress.smoothStart()
+    }
+
+    override fun hideProgress() {
+        smooth_progress.smoothStop()
+    }
 }

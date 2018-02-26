@@ -14,6 +14,17 @@
         android:translationZ="4dp"
         tools:targetApi="lollipop" />
 
+    <com.shuhart.testlook.widget.SmoothProgressBar
+        android:id="@+id/smooth_progress"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:elevation="2dp"
+        android:translationZ="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/fake_toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:targetApi="lollipop" />
+
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/search_icon"
         android:layout_width="wrap_content"
@@ -54,9 +65,9 @@
         android:id="@+id/recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        tools:listitem="@layout/adapter_search_aiport_item"
-        app:layout_constraintTop_toBottomOf="@id/fake_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/fake_toolbar"
+        tools:listitem="@layout/adapter_search_aiport_item" />
 </android.support.constraint.ConstraintLayout>

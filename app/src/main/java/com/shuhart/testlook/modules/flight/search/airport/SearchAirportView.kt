@@ -6,4 +6,6 @@ interface SearchAirportView {
     fun setItems(items: List<City>)
     fun getItems(): List<City>
     fun showToast(message: String)
+    fun showProgress()
+    fun hideProgress()
 }
