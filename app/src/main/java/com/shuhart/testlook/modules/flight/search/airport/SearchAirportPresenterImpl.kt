@@ -19,11 +19,14 @@ class SearchAirportPresenterImpl(private val interactor: SearchAirportInteractor
 
     override fun subscribeOnTextChanges(observable: Observable<TextViewAfterTextChangeEvent>) {
         subscribe(observable
-                .doOnNext { unsubscribe(loadDisposable) }
+                .doOnNext {
+                    unsubscribe(loadDisposable)
+                    view.hideProgress()
+                }
                 .flatMap { Observable.just(it.editable()?.toString() ?: "") }
                 .doOnNext { view.setItems(listOf()) }
-                .filter { it.isNotEmpty() }
                 .debounce(1, TimeUnit.SECONDS)
+                .filter { it.isNotEmpty() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     loadSuggestions(it)
@@ -36,6 +39,8 @@ class SearchAirportPresenterImpl(private val interactor: SearchAirportInteractor
     private fun loadSuggestions(term: String) {
         view.showProgress()
         loadDisposable = interactor.autocomplete(term, Locale.getDefault().language)
+                .delay(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     view.hideProgress()
                     view.setItems(it)

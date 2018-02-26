@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -53,7 +52,6 @@ class SmoothProgressBar : ProgressBar {
         progressAnimatorSet = AnimatorSet()
 
         val updateListener = ValueAnimator.AnimatorUpdateListener { animation ->
-            Log.d(javaClass.simpleName, "Progress=${animation.animatedValue as Int}")
             progress = animation.animatedValue as Int
         }
 

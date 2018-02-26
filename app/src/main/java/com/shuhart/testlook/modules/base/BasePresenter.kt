@@ -18,6 +18,10 @@ abstract class BasePresenter : Presenter {
         }
     }
 
+    protected fun clearSubscriptions() {
+        compositeDisposable.clear()
+    }
+
     override fun onCreate() {}
 
     override fun onDestroy() {

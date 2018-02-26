@@ -77,7 +77,11 @@ class SearchAirportActivity : BaseActivity(), SearchAirportView {
         smooth_progress.smoothStart()
     }
 
-    override fun hideProgress() {
-        smooth_progress.smoothStop()
+    override fun hideProgress(smoothStop: Boolean) {
+        if (smoothStop) {
+            smooth_progress.smoothStop()
+        } else {
+            smooth_progress.stop()
+        }
     }
 }
