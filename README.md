@@ -9,7 +9,11 @@ Extensions are used to extend Android SDK classes:
 
 
 ## Architecture
-MVP + Dagger 2, RxJava2 for Network and Ui layer, LiveData to handle configuration changes. 
+ * Entirely written in [Kotlin](https://kotlinlang.org/)
+ * Uses [RxJava](https://github.com/ReactiveX/RxJava) 2
+ * Uses LiveData from the [Architecture Components](https://developer.android.com/topic/libraries/architecture/)
+ * Uses [dagger2](https://google.github.io/dagger/android.html) for dependency injection
+ * Uses MVP to implement a clean architecture
 
 MVP module: [Search an aiport screen](https://github.com/shuhart/TestLook/tree/master/app/src/main/java/com/shuhart/testlook/modules/flight/search/airport)
 
