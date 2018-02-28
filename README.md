@@ -9,7 +9,7 @@ Extensions are used to extend Android SDK classes:
 
 
 ## Architecture
-MVP + Dagger 2, RxJava2 for Network and Ui layer.
+MVP + Dagger 2, RxJava2 for Network and Ui layer, LiveData to handle configuration changes. 
 
 MVP module: [Search an aiport screen](https://github.com/shuhart/TestLook/tree/master/app/src/main/java/com/shuhart/testlook/modules/flight/search/airport)
 
