@@ -2,6 +2,7 @@
 A simple app to display a curved path between two selected cities. 
 
 To find a location of a city the following API is used:
+
 https://yasen.hotellook.com/autocomplete?term=mow&lang=en
 
 ## Architecture
