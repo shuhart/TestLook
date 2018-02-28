@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -30,7 +31,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var path: Path
     private lateinit var pathMeasure: PathMeasure
 
-    private var dotsdiameter = 0
+    private var dotsradius = 0
     private var dotsMargin = 0
     private var dotsColor = 0
     private val dots = mutableListOf<LatLng>()
@@ -57,7 +58,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         this.dest = dest
         originLatLng = LatLng(origin.location.lat, origin.location.lon)
         destLatLng = LatLng(dest.location.lat, dest.location.lon)
-        dotsdiameter = resources.getDimensionPixelSize(R.dimen.search_flight_animation_dots_radius)
+        dotsradius = resources.getDimensionPixelSize(R.dimen.search_flight_animation_dots_radius)
         dotsMargin = resources.getDimensionPixelSize(R.dimen.search_flight_animation_dots_margin)
         dotsColor = ContextCompat.getColor(this, R.color.colorAccent)
     }
@@ -237,13 +238,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun makeDots() {
         dots.clear()
-        var count = (pathMeasure.length / (dotsdiameter * 2 + dotsMargin)).toInt()
+        var count = (pathMeasure.length / (dotsradius * 2 + dotsMargin)).toInt()
         if (count > 40) {
             count = 40
         }
         for (i in 0 until count) {
             val pos = FloatArray(2)
-            val distance = pathMeasure.length / count * i + dotsdiameter + dotsMargin
+            val distance = pathMeasure.length / count * i + dotsradius + dotsMargin
             pathMeasure.getPosTan(distance, pos, null)
             val screenPoint = Point(pos[0].toInt(), pos[1].toInt())
             dots.add(projection.fromScreenLocation(screenPoint))
@@ -254,8 +255,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         circles.forEach {
             it.remove()
         }
-        val radius = getRadiusInMeters()
         dots.forEach {
+            val radius = getRadiusInMeters(it)
             circles.add(map.addCircle(CircleOptions().center(it)
                     .fillColor(dotsColor)
                     .radius(radius)
@@ -263,14 +264,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getRadiusInMeters(): Double {
-        val first = LatLng(0.0, 0.0)
-        val firstPoint = projection.toScreenLocation(first)
-        firstPoint.x += dotsdiameter
+    private fun getRadiusInMeters(latLng: LatLng): Double {
+        val firstPoint = projection.toScreenLocation(latLng)
+        firstPoint.x += dotsradius * 2
         val second = projection.fromScreenLocation(firstPoint)
-        val diameter = FloatArray(1)
-        Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, diameter)
-        return diameter[0].toDouble()
+        val radius = FloatArray(1)
+        Location.distanceBetween(latLng.latitude, latLng.longitude, second.latitude, second.longitude, radius)
+        Log.d(javaClass.simpleName, "radius1: ${radius[0]}")
+        return radius[0].toDouble()
     }
 
     private fun startAnimation() {
