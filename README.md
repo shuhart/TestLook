@@ -1,13 +1,5 @@
 # TestLook
 
-## Language
-Kotlin. Android extension for Kotlin is used to get rid of findViewById() and annoying casts.
-
-Extensions are used to extend Android SDK classes: 
-[Context.kt](https://github.com/shuhart/TestLook/blob/master/app/src/main/java/com/shuhart/testlook/utils/Context.kt) and 
-[SharedPreferences.kt](https://github.com/shuhart/TestLook/blob/master/app/src/main/java/com/shuhart/testlook/utils/SharedPreferences.kt)
-
-
 ## Architecture
  * Entirely written in [Kotlin](https://kotlinlang.org/)
  * Uses [RxJava](https://github.com/ReactiveX/RxJava) 2
