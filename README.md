@@ -11,7 +11,7 @@ Extensions are used to extend Android SDK classes:
 ## Architecture
  * Entirely written in [Kotlin](https://kotlinlang.org/)
  * Uses [RxJava](https://github.com/ReactiveX/RxJava) 2
- * Uses LiveData from the [Architecture Components](https://developer.android.com/topic/libraries/architecture/)
+ * Uses [LiveData](https://developer.android.com/topic/libraries/architecture/livedata.html) from the [Architecture Components](https://developer.android.com/topic/libraries/architecture/)
  * Uses [dagger2](https://google.github.io/dagger/android.html) for dependency injection
  * Uses MVP to implement a clean architecture
 
