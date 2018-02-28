@@ -154,7 +154,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun getIate(origin: City): String {
         var iate = origin.iate.firstOrNull()
         if (iate == null) {
-           iate = if (origin.name.length > 2) origin.name.substring(0, 3) else origin.name
+            iate = if (origin.name.length > 2) origin.name.substring(0, 3) else origin.name
         }
         return iate
     }
