@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <size
+        android:width="@dimen/map_city_marker_width"
+        android:height="@dimen/map_city_marker_height" />
+    <corners android:radius="@dimen/map_city_marker_corners" />
+    <solid android:color="@color/map_city_marker_color" />
+    <stroke
+        android:width="@dimen/map_city_marker_stroke"
+        android:color="@android:color/white" />
+</shape>

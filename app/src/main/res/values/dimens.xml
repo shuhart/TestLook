@@ -2,4 +2,8 @@
 <resources>
     <dimen name="search_flight_animation_dots_radius">1.5dp</dimen>
     <dimen name="search_flight_animation_dots_margin">8dp</dimen>
+    <dimen name="map_city_marker_width">64dp</dimen>
+    <dimen name="map_city_marker_height">32dp</dimen>
+    <dimen name="map_city_marker_corners">16dp</dimen>
+    <dimen name="map_city_marker_stroke">1dp</dimen>
 </resources>

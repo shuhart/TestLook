@@ -6,7 +6,12 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.widget.TextView
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.shuhart.testlook.R
@@ -108,8 +113,49 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun addLocations() {
-        map.addMarker(MarkerOptions().position(originLatLng).title(origin.name))
-        map.addMarker(MarkerOptions().position(destLatLng).title(dest.name))
+        val textView = createCityMarkerTextView()
+        map.addMarker(createCityMarker(textView, originLatLng, getIate(origin)))
+        map.addMarker(createCityMarker(textView, destLatLng, getIate(dest)))
+    }
+
+    private fun createCityMarkerTextView(): TextView {
+        val textView = TextView(this)
+        val width = resources.getDimensionPixelSize(R.dimen.map_city_marker_width)
+        val height = resources.getDimensionPixelSize(R.dimen.map_city_marker_height)
+        return textView.apply {
+            layoutParams = ViewGroup.LayoutParams(width, height)
+            measure(
+                    View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY))
+            layout(0, 0, measuredWidth, measuredHeight)
+            background = ContextCompat.getDrawable(this@MapsActivity, R.drawable.map_marker)
+            setTextColor(ContextCompat.getColor(this@MapsActivity, android.R.color.white))
+            setAllCaps(true)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 19f)
+            gravity = Gravity.CENTER
+        }
+    }
+
+    private fun createCityMarker(textView: TextView, latLng: LatLng, name: String): MarkerOptions {
+        val originBitmap = Bitmap.createBitmap(textView.measuredWidth,
+                textView.measuredHeight,
+                Bitmap.Config.ARGB_8888)
+        val originCanvas = Canvas(originBitmap)
+        textView.text = name
+        textView.draw(originCanvas)
+
+        return MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromBitmap(originBitmap))
+                .anchor(0.5f, 0.5f)
+    }
+
+    private fun getIate(origin: City): String {
+        var iate = origin.iate.firstOrNull()
+        if (iate == null) {
+           iate = if (origin.name.length > 2) origin.name.substring(0, 3) else origin.name
+        }
+        return iate
     }
 
     private fun zoomToFitLocations() {
@@ -151,7 +197,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val diameter = axis / 2
         if (startPoint.y < endPoint.y) {
             if (startPoint.x < endPoint.x) {
-                firstControlPoint = Point(startPoint.x , startPoint.y + diameter)
+                firstControlPoint = Point(startPoint.x, startPoint.y + diameter)
                 secondControlPoint = Point(endPoint.x, endPoint.y - diameter)
                 if (Math.abs(firstControlPoint.x - secondControlPoint.x) < diameter) {
                     firstControlPoint.x = startPoint.x + diameter
