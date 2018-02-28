@@ -1,5 +1,6 @@
 package com.shuhart.testlook.modules.base
 
+import android.os.Bundle
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -22,9 +23,11 @@ abstract class BasePresenter : Presenter {
         compositeDisposable.clear()
     }
 
-    override fun onCreate() {}
-
     override fun onDestroy() {
         compositeDisposable.clear()
     }
+
+    override fun onSaveInstanceState(bundle: Bundle) {}
+
+    override fun onCreate(bundle: Bundle?) {}
 }

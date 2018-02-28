@@ -24,6 +24,7 @@ class SearchAirportActivity : BaseActivity(), SearchAirportView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_airport)
+        presenter.onCreate(savedInstanceState)
         setup()
     }
 
@@ -83,5 +84,10 @@ class SearchAirportActivity : BaseActivity(), SearchAirportView {
         } else {
             smooth_progress.stop()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        presenter.onSaveInstanceState(outState)
     }
 }

@@ -9,7 +9,11 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.KeyStore
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 
 class Rest {
     private val ENDPOINT = "https://yasen.hotellook.com/"
@@ -34,7 +38,24 @@ class Rest {
                 .addInterceptor(loggingInterceptor)
                 .connectTimeout(TIMEOUT_CONNECTION, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT_READ, TimeUnit.SECONDS)
+                .sslSocketFactory(TLSSocketFactory(arrayOf(buildTrustManager())))
                 .build()
+    }
+
+    private fun buildTrustManager(): X509TrustManager {
+        try {
+            val tm = if (BuildConfig.DEBUG) {
+                DebugApiTrustManager()
+            } else {
+                val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                trustManagerFactory.init(null as KeyStore?)
+                trustManagerFactory.trustManagers[0]
+            }
+            return tm as X509TrustManager
+        } catch (e: Exception) {
+            Log.e(javaClass.simpleName, e.message, e)
+            throw e
+        }
     }
 
     fun create(): Api = RETROFIT.create(Api::class.java)

@@ -1,6 +1,7 @@
 package com.shuhart.testlook.di
 
 import android.app.Application
+import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import com.shuhart.testlook.api.network.Api
 import com.shuhart.testlook.api.network.Rest
